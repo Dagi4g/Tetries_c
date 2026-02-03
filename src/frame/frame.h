@@ -10,7 +10,12 @@ void frame_init(int width, int height);
 // move cursor
 void moveCursor(int row, int col);
 
-void animatePiece(int WIDTH, int HEIGHT);
+struct Block {
+        int x;
+        int y;
+};
+
+void animatePiece(int WIDTH, int HEIGHT, struct Block *b);
 // Clear the screen (virtual screen)
 void frame_clear(void);
 

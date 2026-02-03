@@ -5,6 +5,7 @@
 static int frame_width;
 static int frame_height;
 
+
 // Initialize ncurses
 void frame_start(void) {
     initscr();        // start curses mode
@@ -60,32 +61,38 @@ void frame_draw(void) {
 
     refresh(); // push changes to the terminal
 }
-void animatePiece(int WIDTH,int HEIGHT ) {
-    int pieceRow = 1;
-    int pieceCol = WIDTH / 2;
+void animatePiece(int WIDTH,int HEIGHT , struct Block *p) {
     int ch;
 
-    while (pieceRow < HEIGHT) {
+    while (p->y < HEIGHT-1) {
         // --- INPUT ---
         ch = getch();          // non-blocking
         if (ch == 'j') {
-            if (pieceCol > 1)  // prevent crossing left wall
-                pieceCol--;
+            if (p->x > -1)  // prevent crossing left wall
+                p->x--;
         }
+	else if (ch == 'k') {
+		if (p->x < WIDTH-2){
+			p->x ++;
+		}
+	}
 
         // --- DRAW ---
-        mvaddch(2 + pieceRow, 2 + pieceCol, '#');
+        mvaddch(2 + p->y, 2 + p->x ,'#');
+
         refresh();
 
         // --- DELAY (gravity tick) ---
-        usleep(200000); // 200 ms
+        usleep(300000); // 200 ms
 
         // --- ERASE OLD POSITION ---
-        mvaddch(2 + pieceRow, 2 + pieceCol, ' ');
+        mvaddch(2 + p->y, 2 + p->x, ' ');
 
         // --- UPDATE STATE ---
-        pieceRow++;
+        p->y ++;
     }
+    p->y = 1;
+    p->x = WIDTH/2;
 }
 // End curses mode (restore terminal)
 void frame_end(void) {
